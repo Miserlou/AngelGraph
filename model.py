@@ -1,6 +1,6 @@
 from peewee import *
 
-DATABASE = 'angels3.db'
+DATABASE = 'angels.db'
 database = SqliteDatabase(DATABASE)
 
 class BaseModel(Model):
@@ -11,4 +11,5 @@ class AngelEvent(BaseModel):
     al_id = CharField()
     event_type = CharField()
     username = CharField()
+    target = CharField()
     datetime = DateTimeField()

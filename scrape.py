@@ -5,7 +5,7 @@ import urllib2
 import json
 import pprint
 
-DATABASE = 'angels3.db'
+DATABASE = 'angels4.db'
 database = SqliteDatabase(DATABASE)
 API = 'http://api.angel.co/1/feed'
 
@@ -43,17 +43,21 @@ def event_in_db(id):
         return False
 
 def add_event(event):
+    if event['target']:
+        target = event['target']['angellist_url']
+    else:
+        target = "No target"
     e = AngelEvent.create(  al_id   = event['id'],
                         event_type  = event['item']['type'], 
-                        username    = event['actor']['angellist_url'], 
-                        datetime    = event['id']
+                        username    = event['actor']['angellist_url'],
+                        target      = target,
+                        datetime    = event['timestamp']
                     )
     return e
 
 def get_all_events():
     for event in AngelEvent.select():
-        print event.al_id
+        print event.username[17:] + " " + event.event_type.lower() + "ed " + event.target[17:] + "at " + event.datetime
 
 setup_db()
 scrape()
-get_all_events()
