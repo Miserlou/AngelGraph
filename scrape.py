@@ -25,17 +25,19 @@ def scrape():
     data = json.load(urllib2.urlopen(API))
 
     for event in data['feed']:
-        if event['actor']['type'] != 'User':
-            continue
+        try:
+            if event['actor']['type'] != 'User':
+                continue
 
-        if event['item']['type'] not in ['Comment', 'StartupIntro', 'Follow']:
-            continue
+            if event['item']['type'] not in ['Comment', 'StartupIntro', 'Follow']:
+                continue
 
-        if event_in_db(event['id']):
+            if event_in_db(event['id']):
+                continue
+        except Exception, e:
             continue
 
         add_event(event)
-
 
 def event_in_db(id):
     try:
@@ -49,6 +51,7 @@ def add_event(event):
         target = event['target']['angellist_url']
     else:
         target = "No target"
+
     e = AngelEvent.create(  al_id   = event['id'],
                         event_type  = event['item']['type'], 
                         username    = event['actor']['angellist_url'],
@@ -60,8 +63,6 @@ def add_event(event):
 def get_all_events():
     for event in AngelEvent.select():
         print event.username[17:] + " " + event.event_type.lower() + "ed " + event.target[17:] + "at " + event.datetime
-
-
 
 setup_db()
 scrape()
