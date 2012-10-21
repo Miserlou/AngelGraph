@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from peewee import *
 from model import AngelEvent
 import datetime
